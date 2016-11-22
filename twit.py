@@ -15,6 +15,7 @@ access_token_secret = os.getenv("TWITTER_SECRET_KEY")
 consumer_key = os.getenv("TWITTER_C_ACCESS_KEY")
 consumer_secret = os.getenv("TWITTER_C_SECRET_KEY")
 
+keyword = sys.argv[-1]
 
 #This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
@@ -41,4 +42,6 @@ if __name__ == '__main__':
     stream = Stream(auth, l)
 
     #This line filter Twitter Streams to capture data by the keywords: 'python', 'javascript', 'ruby'
-    data = stream.filter(track=['Pandas','Panda','pandas','panda'])
+    # data = stream.filter(track=['Pandas','Panda','pandas','panda'])
+
+    data = stream.filter(track=['%ss'%keyword.capitalize(),keyword.capitalize(),'%ss'%keyword,keyword])
