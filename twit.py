@@ -20,13 +20,19 @@ keyword = sys.argv[-1]
 #This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
 
+    def pick_word(self,text):
+
+        sampl = text.split()
+        result = '%s%s%s' % ('\t'*random.randint(1,9),random.choice(sampl),'\n'*random.randint(1,3)) 
+
+        return result
+
     def on_data(self, data):
 
         textings = json.loads(data)['text']
-        sampl = textings.split()
 
+        print self.pick_word(textings)
 
-        print  '%s%s%s' % ('\t'*random.randint(1,9),random.choice(sampl),'\n'*random.randint(1,3)) 
         return True
 
     def on_error(self, status):
@@ -40,8 +46,5 @@ if __name__ == '__main__':
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
     stream = Stream(auth, l)
-
-    #This line filter Twitter Streams to capture data by the keywords: 'python', 'javascript', 'ruby'
-    # data = stream.filter(track=['Pandas','Panda','pandas','panda'])
 
     data = stream.filter(track=['%ss'%keyword.capitalize(),keyword.capitalize(),'%ss'%keyword,keyword])
