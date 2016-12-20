@@ -4,18 +4,30 @@ import os
 import sys
 import json
 import random
+import argparse
 
-from tweepy.streaming import StreamListener
-from tweepy import OAuthHandler
-from tweepy import Stream
+try:
+    from tweepy.streaming import StreamListener
+    from tweepy import OAuthHandler
+    from tweepy import Stream
+except ImportError as e:
+    print >> sys.stderr, "--[ Tweepy not installed, collecting it through pip."
+    pip.main(['install','tweepy'])
 
-#Variables that contains the user credentials to access Twitter API 
+
+parser = argparse.ArgumentParser(description='Twitter event listener')
+parser.add_argument('-k','--key', type=str,
+                    help='Search string',action="store",required=True)
+# parser.add_argument('key', nargs="", default="this")
+args = parser.parse_args()
+keyword = args.key
+
+#Variables that contains the user credentials to access Twitter API
 access_token = os.getenv("TWITTER_ACCESS_KEY")
 access_token_secret = os.getenv("TWITTER_SECRET_KEY")
 consumer_key = os.getenv("TWITTER_C_ACCESS_KEY")
 consumer_secret = os.getenv("TWITTER_C_SECRET_KEY")
 
-keyword = sys.argv[-1]
 
 #This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
@@ -29,7 +41,11 @@ class StdOutListener(StreamListener):
 
     def on_data(self, data):
 
-        textings = json.loads(data)['text']
+        result = json.loads(data)
+        try:
+            textings = result['text']
+        except KeyError as e:
+            return True
 
         print self.pick_word(textings)
 
@@ -47,4 +63,4 @@ if __name__ == '__main__':
     auth.set_access_token(access_token, access_token_secret)
     stream = Stream(auth, l)
 
-    data = stream.filter(track=['%ss'%keyword.capitalize(),keyword.capitalize(),'%ss'%keyword,keyword])
+    data = stream.filter(track=[r'%ss'%keyword.capitalize(),r'%s'%keyword.capitalize(),r'%ss'%keyword,r'%s'%keyword])
