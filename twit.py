@@ -2,6 +2,7 @@
 
 import os
 import sys
+import pip
 import json
 import random
 import argparse
@@ -16,9 +17,7 @@ except ImportError as e:
 
 
 parser = argparse.ArgumentParser(description='Twitter event listener')
-parser.add_argument('-k','--key', type=str,
-                    help='Search string',action="store",required=True)
-# parser.add_argument('key', nargs="", default="this")
+parser.add_argument('-k','--key', type=str,help='Search string',action="store",required=True)
 args = parser.parse_args()
 keyword = args.key
 
@@ -27,7 +26,6 @@ access_token = os.getenv("TWITTER_ACCESS_KEY")
 access_token_secret = os.getenv("TWITTER_SECRET_KEY")
 consumer_key = os.getenv("TWITTER_C_ACCESS_KEY")
 consumer_secret = os.getenv("TWITTER_C_SECRET_KEY")
-
 
 #This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
