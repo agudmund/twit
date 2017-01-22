@@ -6,6 +6,7 @@ import pip
 import json
 import random
 import argparse
+import wikipedia
 
 try:
     from tweepy.streaming import StreamListener
@@ -45,7 +46,12 @@ class StdOutListener(StreamListener):
         except KeyError as e:
             return True
 
-        print self.pick_word(textings)
+        phrase = self.pick_word(textings)
+        try:
+            choices = wikipedia.search(self.pick_word(textings))
+            print wikipedia.summary(random.choice(choices))
+        except:
+            print phrase
 
         return True
 
