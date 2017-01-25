@@ -16,7 +16,6 @@ except ImportError as e:
     print >> sys.stderr, "--[ Tweepy not installed, collecting it through pip."
     pip.main(['install','tweepy'])
 
-
 parser = argparse.ArgumentParser(description='Twitter event listener')
 parser.add_argument('-k','--key', type=str,help='Search string',action="store",required=True)
 args = parser.parse_args()
@@ -27,6 +26,21 @@ access_token = os.getenv("TWITTER_ACCESS_KEY")
 access_token_secret = os.getenv("TWITTER_SECRET_KEY")
 consumer_key = os.getenv("TWITTER_C_ACCESS_KEY")
 consumer_secret = os.getenv("TWITTER_C_SECRET_KEY")
+
+def expand_search(token):
+    '''Expands a keyword into upper,lower, and capitalized spelling.'''
+
+    tokens = []
+    tokens.append(keyword)                      #Normal
+    tokens.append(r'%ss'%keyword)               #Plural
+    tokens.append(keyword.capitalize())         #Capital case
+    tokens.append(r'%ss'%keyword.capitalize())  #Capital case plural
+    tokens.append(keyword.lower())              #Lower case
+    tokens.append(r'%ss'%keyword.lower())       #Lower case plural
+    tokens.append(keyword.upper())              #Upper case
+    tokens.append(r'%ss'%keyword.upper())       #Upper case plural
+
+    return tokens
 
 #This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
@@ -67,4 +81,4 @@ if __name__ == '__main__':
     auth.set_access_token(access_token, access_token_secret)
     stream = Stream(auth, l)
 
-    data = stream.filter(track=[r'%ss'%keyword.capitalize(),r'%s'%keyword.capitalize(),r'%ss'%keyword,r'%s'%keyword])
+    data = stream.filter(track=expand_search(keyword))
