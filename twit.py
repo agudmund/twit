@@ -18,6 +18,7 @@ except ImportError as e:
 
 parser = argparse.ArgumentParser(description='Twitter event listener')
 parser.add_argument('-k','--key', type=str,help='Search string',action="store",required=True)
+parser.add_argument('-s','--stream', type=str,help='Prints out a word stream instead of the actual tweets',action="store_true")
 args = parser.parse_args()
 keyword = args.key
 
@@ -60,12 +61,15 @@ class StdOutListener(StreamListener):
         except KeyError as e:
             return True
 
-        phrase = self.pick_word(textings)
-        try:
-            choices = wikipedia.search(self.pick_word(textings))
-            print wikipedia.summary(random.choice(choices))
-        except:
-            print phrase
+        if args.stream:
+            phrase = self.pick_word(textings)
+            try:
+                choices = wikipedia.search(self.pick_word(textings))
+                print wikipedia.summary(random.choice(choices))
+            except:
+                print phrase
+        else:
+            print textings
 
         return True
 
@@ -78,7 +82,7 @@ if __name__ == '__main__':
     #This handles Twitter authetification and the connection to Twitter Streaming API
     l = StdOutListener()
     auth = OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
+    auth.set_access_token(access_token, access_token_secret )
     stream = Stream(auth, l)
 
     data = stream.filter(track=expand_search(keyword))
