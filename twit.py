@@ -16,13 +16,7 @@ except ImportError as e:
     print >> sys.stderr, "--[ Tweepy not installed, collecting it through pip."
     pip.main(['install','tweepy'])
 
-parser = argparse.ArgumentParser(description='Twitter event listener')
-parser.add_argument('-k','--key', type=str,help='Search string',action="store",required=True)
-parser.add_argument('-s','--stream', type=str,help='Prints out a word stream instead of the actual tweets',action="store_true")
-args = parser.parse_args()
-keyword = args.key
-
-#Variables that contains the user credentials to access Twitter API
+# Variables that contains the user credentials to access Twitter API
 access_token = os.getenv("TWITTER_ACCESS_KEY")
 access_token_secret = os.getenv("TWITTER_SECRET_KEY")
 consumer_key = os.getenv("TWITTER_C_ACCESS_KEY")
@@ -76,8 +70,13 @@ class StdOutListener(StreamListener):
     def on_error(self, status):
         print status
 
-
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(description='Twitter event listener')
+    parser.add_argument('-k','--key', type=str,help='Search string',action="store",required=True)
+    parser.add_argument('-s','--stream', type=str,help='Prints out a word stream instead of the actual tweets',action="store_true")
+    args = parser.parse_args()
+    keyword = args.key
 
     #This handles Twitter authetification and the connection to Twitter Streaming API
     l = StdOutListener()
