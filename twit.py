@@ -57,10 +57,13 @@ class StdOutListener(StreamListener):
 
         if args.stream:
             phrase = self.pick_word(textings)
-            try:
-                choices = wikipedia.search(self.pick_word(textings))
-                print wikipedia.summary(random.choice(choices))
-            except:
+            if args.wiki:
+                try:
+                    choices = wikipedia.search(self.pick_word(textings))
+                    print wikipedia.summary(random.choice(choices))
+                except:
+                    print phrase
+            else:
                 print phrase
         else:
             print textings
