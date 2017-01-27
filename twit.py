@@ -74,8 +74,15 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Twitter event listener')
     parser.add_argument('-k','--key', type=str,help='Search string',action="store",required=True)
-    parser.add_argument('-s','--stream', type=str,help='Prints out a word stream instead of the actual tweets',action="store_true")
+    parser.add_argument('-s','--stream', help='Prints out a word stream instead of the actual tweets',action="store_true")
+    parser.add_argument('-w','--wiki', help='Retrieves a summary from wikipedia on the word chosen in the stream',action="store_true")
+
     args = parser.parse_args()
+
+    if args.wiki and not args.stream:
+        print 'The --wiki flag requires the --stream flag'
+        sys.exit(1)
+
     keyword = args.key
 
     #This handles Twitter authetification and the connection to Twitter Streaming API
