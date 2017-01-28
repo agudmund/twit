@@ -13,7 +13,23 @@ auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret )
 
 api = tweepy.API(auth)
-public_tweets = api.home_timeline()
+user = api.get_user('creativedecodev')
 
-for tweet in public_tweets:
-	print tweet.text
+def printings():
+	public_tweets = api.home_timeline()
+
+	for tweet in public_tweets:
+		print tweet.text
+
+	return True
+
+def friends():
+	print 'User: %s' % user
+	print 'Screen Name: %s' % user.screen_name
+	print 'Followers : %s' % user.followers_count
+	print 'Friend List : '
+	for friend in user.friends():
+		print '\t%s' % friend.screen_name
+
+if __name__ == '__main__':
+	friends()
