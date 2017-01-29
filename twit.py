@@ -12,6 +12,7 @@ try:
     from tweepy.streaming import StreamListener
     from tweepy import OAuthHandler
     from tweepy import Stream
+    from tweepy import API
 except ImportError as e:
     print >> sys.stderr, "--[ Tweepy not installed, collecting it through pip."
     pip.main(['install','tweepy'])
@@ -60,7 +61,8 @@ class StdOutListener(StreamListener):
             if args.wiki:
                 try:
                     choices = wikipedia.search(self.pick_word(textings))
-                    print wikipedia.summary(random.choice(choices))
+                    rez = wikipedia.summary(random.choice(choices))
+                    api.update_status(rez.split('.')[0])
                 except:
                     print phrase
             else:
@@ -93,5 +95,6 @@ if __name__ == '__main__':
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret )
     stream = Stream(auth, l)
+    api = API(auth)
 
     data = stream.filter(track=expand_search(keyword))
