@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# *-* coding: utf-8 *-* 
 
 import os
 import sys
@@ -96,5 +97,7 @@ if __name__ == '__main__':
     auth.set_access_token(access_token, access_token_secret )
     stream = Stream(auth, l)
     api = API(auth)
-
-    data = stream.filter(track=expand_search(keyword))
+    try:
+        data = stream.filter(track=expand_search(keyword))
+    except UnicodeEncodeError as e:
+        print 'This'
