@@ -4,32 +4,53 @@ import os
 import tweepy
 from tweepy import OAuthHandler
 
-access_token = os.getenv("TWITTER_ACCESS_KEY")
-access_token_secret = os.getenv("TWITTER_SECRET_KEY")
-consumer_key = os.getenv("TWITTER_C_ACCESS_KEY")
-consumer_secret = os.getenv("TWITTER_C_SECRET_KEY")
+class Twitterings:
+	def __init__(self):
+		self.name = 'Twitterings'
+		self.getenv()
+		self.auth = OAuthHandler(self.consumer_key, self.consumer_secret)
+		self.auth.set_access_token(self.access_token, self.access_token_secret )
+		self.api = tweepy.API(self.auth)
+		self.me = self.api.me()
 
-auth = OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret )
+	def speak(self,text):
 
-api = tweepy.API(auth)
-user = api.get_user('creativedecodev')
+		self.api.update_status(text)
 
-def printings():
-	public_tweets = api.home_timeline()
+		return True
 
-	for tweet in public_tweets:
-		print tweet.text
+	def get_user(self,name):
+		user = self.api.get_user(name)
+		print 'User: %s' % user.screen_name
+		print '\tDescription: %s' % user.description
+		print '\tLocation: %s' % user.location
+		print '\tFollowers: %s' % user.followers_count
+		print '\tFriends: %s' % user.friends_count
 
-	return True
+		return True
 
-def friends():
-	print 'User: %s' % user
-	print 'Screen Name: %s' % user.screen_name
-	print 'Followers : %s' % user.followers_count
-	print 'Friend List : '
-	for friend in user.friends():
-		print '\t%s' % friend.screen_name
+	def public(self):
+		public_tweets = api.home_timeline()
+
+		for tweet in public_tweets:
+			print tweet.text
+
+		return True
+
+	def getenv(self, env=True,keyfile=None):
+		if env==True:
+			self.access_token = os.getenv("TWITTER_ACCESS_KEY")
+			self.access_token_secret = os.getenv("TWITTER_SECRET_KEY")
+			self.consumer_key = os.getenv("TWITTER_C_ACCESS_KEY")
+			self.consumer_secret = os.getenv("TWITTER_C_SECRET_KEY")
+		else:
+			with open(keyfile) as data:
+				result = data.readlines()
+
+			for n in result.split('\n'):
+				eval('self.%s'%n)
+
 
 if __name__ == '__main__':
-	friends()
+	twit = Twitterings()
+	twit.get_user('creativedecodev')
