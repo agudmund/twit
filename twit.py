@@ -6,6 +6,7 @@ import sys
 import pip
 import json
 import random
+import pymongo
 import argparse
 import wikipedia
 
@@ -17,6 +18,14 @@ try:
 except ImportError as e:
     print >> sys.stderr, "--[ Tweepy not installed, collecting it through pip."
     pip.main(['install','tweepy'])
+
+# Set up Mongo
+def m(keyword,data):
+    conn = pymongo.MongoClient()
+    db = conn.twitter
+    collection = eval("db.%s"%keyword)
+    collection.insert(data)
+
 
 # Variables that contains the user credentials to access Twitter API
 access_token = os.getenv("TWITTER_ACCESS_KEY")
@@ -52,6 +61,7 @@ class StdOutListener(StreamListener):
     def on_data(self, data):
 
         result = json.loads(data)
+        m(keyword,result)
         try:
             textings = result['text']
         except KeyError as e:
@@ -82,6 +92,7 @@ if __name__ == '__main__':
     parser.add_argument('-k','--key', type=str,help='Search string',action="store",required=True)
     parser.add_argument('-s','--stream', help='Prints out a word stream instead of the actual tweets',action="store_true")
     parser.add_argument('-w','--wiki', help='Retrieves a summary from wikipedia on the word chosen in the stream',action="store_true")
+    parser.add_argument('-m','--mongo', help='Stores the results in a mongod database',action="store_true")
 
     args = parser.parse_args()
 
