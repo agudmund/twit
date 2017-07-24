@@ -5,10 +5,12 @@ import os
 import sys
 import pip
 import json
+from time import sleep
 import random
 import pymongo
 import argparse
 import wikipedia
+from word import Jumble
 
 try:
     from tweepy.streaming import StreamListener
@@ -20,11 +22,11 @@ except ImportError as e:
     pip.main(['install','tweepy'])
 
 # Set up Mongo
-def m(keyword,data):
-    conn = pymongo.MongoClient()
-    db = conn.twitter
-    collection = eval("db.%s"%keyword)
-    collection.insert(data)
+# def m(keyword,data):
+#     conn = pymongo.MongoClient()
+#     db = conn.twitter
+#     collection = eval("db.%s"%keyword)
+#     collection.insert(data)
 
 
 # Variables that contains the user credentials to access Twitter API
@@ -61,7 +63,7 @@ class StdOutListener(StreamListener):
     def on_data(self, data):
 
         result = json.loads(data)
-        m(keyword,result)
+        # m(keyword,result)
         try:
             textings = result['text']
         except KeyError as e:
@@ -73,14 +75,28 @@ class StdOutListener(StreamListener):
                 try:
                     choices = wikipedia.search(self.pick_word(textings))
                     rez = wikipedia.summary(random.choice(choices))
-                    api.update_status(rez.split('.')[0])
+                    print rez,'\n\n\n\n'
                 except:
-                    print phrase
+                    rex = phrase
             else:
-                print phrase
+                rex = phrase
         else:
-            print textings
+            rex = textings
 
+        scramble = Jumble( rex )
+
+        x= random.choice(scramble.sentence)
+        y= random.choice(scramble.sentence)
+
+        while x==y:
+            y= random.choice(scramble.sentence)     
+
+        if args.echo:
+            api.update_status(' '.join(scramble.swap(x,y)))
+
+        print rex
+
+        sleep(3)
         return True
 
     def on_error(self, status):
@@ -93,6 +109,7 @@ if __name__ == '__main__':
     parser.add_argument('-s','--stream', help='Prints out a word stream instead of the actual tweets',action="store_true")
     parser.add_argument('-w','--wiki', help='Retrieves a summary from wikipedia on the word chosen in the stream',action="store_true")
     parser.add_argument('-m','--mongo', help='Stores the results in a mongod database',action="store_true")
+    parser.add_argument('-e','--echo', help='Echos random tweets to the feed, randomizing the word order',action="store_true")
 
     args = parser.parse_args()
 
