@@ -83,6 +83,13 @@ class StdOutListener(StreamListener):
         else:
             rex = textings
 
+        sleep(3)
+        return True
+
+
+    def scramblings(self):
+        # Word scramble, the act of echoing sentences to find new creative ways of wording things.
+
         scramble = Jumble( rex )
 
         x= random.choice(scramble.sentence)
@@ -94,10 +101,7 @@ class StdOutListener(StreamListener):
         if args.echo:
             api.update_status(' '.join(scramble.swap(x,y)))
 
-        print rex
-
-        sleep(3)
-        return True
+            print rex
 
     def on_error(self, status):
         print status
