@@ -18,7 +18,7 @@ try:
     from tweepy import Stream
     from tweepy import API
 except ImportError as e:
-    print >> sys.stderr, "--[ Tweepy not installed, collecting it through pip."
+    print ("--[ Tweepy not installed, collecting it through pip.")
     pip.main(['install','tweepy'])
 
 # Set up Mongo
@@ -66,16 +66,18 @@ class StdOutListener(StreamListener):
         # m(keyword,result)
         try:
             textings = result['text']
+            print(textings)
         except KeyError as e:
             return True
 
         if args.stream:
             phrase = self.pick_word(textings)
+            print(phrase)
             if args.wiki:
                 try:
                     choices = wikipedia.search(self.pick_word(textings))
                     rez = wikipedia.summary(random.choice(choices))
-                    print rez,'\n\n\n\n'
+                    print (rez,'\n\n\n\n')
                 except:
                     rex = phrase
             else:
@@ -101,10 +103,10 @@ class StdOutListener(StreamListener):
         if args.echo:
             api.update_status(' '.join(scramble.swap(x,y)))
 
-            print rex
+            print (rex)
 
     def on_error(self, status):
-        print status
+        print (status)
 
 if __name__ == '__main__':
 
@@ -118,7 +120,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.wiki and not args.stream:
-        print 'The --wiki flag requires the --stream flag'
+        print ('The --wiki flag requires the --stream flag')
         sys.exit(1)
 
     keyword = args.key
@@ -129,7 +131,8 @@ if __name__ == '__main__':
     auth.set_access_token(access_token, access_token_secret )
     stream = Stream(auth, l)
     api = API(auth)
+    # print(api.home_timeline())
     try:
         data = stream.filter(track=expand_search(keyword))
     except UnicodeEncodeError as e:
-        print 'This'
+        print ('This')

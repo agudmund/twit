@@ -18,14 +18,14 @@ class StdOutListener(StreamListener):
 
         result = json.loads(data)
         try:
-            print result['text']
+            print (result['text'])
         except KeyError as e:
             return True
 
         return True
 
     def on_error(self, status):
-        print status
+        print (status)
 
 if __name__ == '__main__':
 
@@ -39,4 +39,4 @@ if __name__ == '__main__':
     auth.set_access_token(access_token, access_token_secret )
     stream = Stream(auth, l)
 
-    data = stream.filter(track=sys.argv[-1])
+    data = stream.filter(track=[sys.argv[-1]])

@@ -2,6 +2,7 @@
 
 import sys
 import random
+import twits
 
 class Jumble:
 	def __init__(self, sentence):
@@ -34,8 +35,12 @@ if __name__ == '__main__':
 	"Rosie isn't fighting nowadays",
 	]
 
+	twit = twits.Twitterings()
+	sentences = [n.text for n in twit.public()]
+	print(sentences)
+
 	for sentence in sentences:
-		print >> sys.stdout, '\n--[ Test case: "%s"' % sentence
+		print('\n--[ Test case: "%s"' % sentence)
 		scramble = Jumble( sentence )
 
 		x= random.choice(scramble.sentence)
@@ -44,5 +49,6 @@ if __name__ == '__main__':
 		while x==y:
 			y= random.choice(scramble.sentence)			
 
-		print >> sys.stdout, '\t--[ Swapping "%s" for "%s"' % (x,y)
-		print scramble.swap(x,y)
+		print ('\t--[ Swapping "%s" for "%s"' % (x,y))
+		print (scramble.swap(x,y))
+

@@ -21,21 +21,22 @@ class Twitterings:
 
 	def get_user(self,name):
 		user = self.api.get_user(name)
-		print 'User: %s' % user.screen_name
-		print '\tDescription: %s' % user.description
-		print '\tLocation: %s' % user.location
-		print '\tFollowers: %s' % user.followers_count
-		print '\tFriends: %s' % user.friends_count
+		print( 'User: %s' % user.screen_name)
+		print( '\tDescription: %s' % user.description)
+		print( '\tLocation: %s' % user.location)
+		print( '\tFollowers: %s' % user.followers_count)
+		print( '\tFriends: %s' % user.friends_count)
 
 		return True
 
-	def public(self):
-		public_tweets = api.home_timeline()
+	def public(self,printing=False):
+		public_tweets = self.api.home_timeline()
 
-		for tweet in public_tweets:
-			print tweet.text
+		if printing:
+			for tweet in public_tweets:
+				print (tweet.text)
 
-		return True
+		return public_tweets
 
 	def getenv(self, env=True,keyfile=None):
 		if env==True:
@@ -54,3 +55,4 @@ class Twitterings:
 if __name__ == '__main__':
 	twit = Twitterings()
 	twit.get_user('creativedecodev')
+	# twit.public()
