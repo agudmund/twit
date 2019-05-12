@@ -21,14 +21,6 @@ except ImportError as e:
     print ("--[ Tweepy not installed, collecting it through pip.")
     pip.main(['install','tweepy'])
 
-# Set up Mongo
-# def m(keyword,data):
-#     conn = pymongo.MongoClient()
-#     db = conn.twitter
-#     collection = eval("db.%s"%keyword)
-#     collection.insert(data)
-
-
 # Variables that contains the user credentials to access Twitter API
 access_token = os.getenv("TWITTER_ACCESS_KEY")
 access_token_secret = os.getenv("TWITTER_SECRET_KEY")
@@ -63,7 +55,6 @@ class StdOutListener(StreamListener):
     def on_data(self, data):
 
         result = json.loads(data)
-        # m(keyword,result)
         try:
             textings = result['text']
             print(textings)

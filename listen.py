@@ -9,10 +9,7 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy import API
 
-
-
 class StdOutListener(StreamListener):
-
 
     def on_data(self, data):
 
