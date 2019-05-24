@@ -10,7 +10,6 @@ import random
 import pymongo
 import argparse
 import wikipedia
-from word import Jumble
 
 try:
     from tweepy.streaming import StreamListener
